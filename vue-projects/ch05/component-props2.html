@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Belajar Vue</title>
+    <!-- <script src="https://unpkg.com/vue@next"></script> -->
+    <script src="vue.global.js"></script>
+    <style type="text/css">
+      .card {
+          background: #fdfdfd;
+          border:1px solid #ddd;
+          border-radius: 5px;
+          margin: 5px;
+          padding: 5px;
+          width: 150px;
+          float: left;
+      }
+      .card h3{
+        text-align: center;
+        margin: 0;
+      }
+      .card img{
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <script>
+      // membuat komponen Welcome
+      const Book = {
+        props: [ 'title', 'image' ],
+        template : `
+            <div class="card">
+                <h3>{{ title }}</h3>
+                <img :src="'images/'+image" />
+            </div>
+        `
+      }
+
+
+      // objek aplikasi Vue
+      const app = Vue.createApp({
+        components: {
+          'book': Book
+        },
+        template: `
+          <div>
+            <book title="Laravel" image="laravel.png" />
+            <book title="Vue" image="vue.png" />
+          </div>
+        `
+      })
+      .mount('#app')
+    </script>
+  </body>
+</html>

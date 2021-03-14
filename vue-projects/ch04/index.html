@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Belajar Vue</title>
+    <script src="https://unpkg.com/vue@next"></script>
+    <style type="text/css">
+      div {
+        margin-bottom: 10px;
+      }
+
+      div > label {
+        width: 85px;
+        padding: 5px;
+        display: inline-block;
+        vertical-align: top;
+      }
+
+      input[type=text], textarea {
+        width: 200px;
+        padding: 5px;
+        border-radius: 5px;
+        box-sizing: border-box;
+      }
+
+      input[type=number] {
+        width: 100px;
+        padding: 5px;
+        border-radius: 5px;
+        box-sizing: border-box;
+      }
+
+      select {
+        width: 200px;
+        padding: 5px;
+        border-radius: 5px;
+        box-sizing: border-box;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- mount point -->
+    <div id="app"></div>
+
+    <script>
+const App = {
+  template: `
+    <h1> Form Input Buku </h1>
+
+    <form ref="form" @submit.prevent="submitForm(book)">
+      
+      <p v-if="errorMessages.length">
+        <b>Please correct the following error(s):</b>
+        <ul>
+            <li v-for="error in errorMessages">{{ error }}</li>
+        </ul>
+      </p>
+
+      <div>
+        <label>Title  </label>
+        <input type="text" name="title" v-model="book.title" />
+      </div>
+
+      <div>
+        <label>Description </label>
+        <textarea name="description" v-model.trim="book.description" rows="3" />
+      </div>
+
+      <div>
+        <label>Price </label>
+        <input type="number" name="price" v-model.number="book.price" />
+      </div>
+
+      <div>
+        <label>Category </label>
+        <select name="category" v-model="book.category">
+          <option v-for="option in category_options" :value="option">
+              {{ option }}
+          </option>
+        </select>
+      </div>
+
+      <div>
+        <label>Authors </label>
+        <span>
+          <input type="checkbox" name="authors" id="jack" value="jack" v-model="book.authors" />
+          <label for="jack">Jack</label>
+          <input type="checkbox" name="authors" id="john" value="john" v-model="book.authors" />
+          <label for="john">John</label>
+          <input type="checkbox" name="authors" id="mike" value="mike" v-model="book.authors" />
+          <label for="mike">Mike</label>
+        </span>
+      </div>
+
+      <div>
+        <label>Status </label>
+        <span>
+          <input type="radio" name="status" id="draft" value="draft" v-model="book.status" />
+          <label for="draft">Draf</label>
+          <input type="radio" name="status" id="publish" value="publish" v-model="book.status" />
+          <label for="publish">Publish</label>
+        </span>
+      </div>
+
+      <div>
+        <label>Cover:</label>
+        <input name="cover" type="file">
+      </div>
+
+      <button type="submit">SUBMIT</button>
+    </form>
+  `,
+  data () {
+    return {
+      book: {
+        title: 'Google Glass with VueJS',
+        description: 'Control Google Glass with VueJS',
+        price: 89000,
+        category: 'programming',
+        authors: ['john'],
+        status: 'draft'
+      },
+      category_options: [
+        'general', 'programming', 'design'
+      ],
+      errorMessages: []
+    }
+  },
+  methods: {
+    submitForm(book){
+      const { title, description, price, category, authors, status } = book
+      const form = this.$refs.form
+      let valid = true
+      if(title.length < 3){
+        this.errorMessages.push('Title minimal 3 karakter!')
+        valid = false
+        form.title.focus()
+      }
+
+      if(description.length > 200){
+        this.errorMessages.push('Description maksimal 200 karakter!')
+        valid = false
+        form.description.focus()
+      }
+
+      if(price < 0){
+        this.errorMessages.push('Price tidak boleh minus!')
+        valid = false
+        form.price.focus()
+      } 
+
+      if(category.length === 0){
+        this.errorMessages.push('Pilih minimal 1 category!')
+        valid = false
+        form.category.focus()
+      }
+
+      if(status.length === 0){
+        this.errorMessages.push('Status belum dipilih!')
+        valid = false
+      }
+
+      if (valid === true) {
+        // persiapkan data 
+        // let formData = new FormData()
+        // formData.append('title', title)
+        // formData.append('description', description)
+        // formData.append('price', price)
+        // formData.append('category', category)
+        // formData.append('authors', authors)
+        // formData.append('status', status)
+
+        let formData = new FormData(form);
+        formData.append('authors', JSON.stringify(authors))
+        // send data to server
+        // console.log(formData)
+        fetch('http://localhost/index.php', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => response.text())
+        .then(data => {
+          console.log('Success:', data);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+        // alert('Terima kasih telah mengisi form dengan benar')
+      }
+    }
+  }
+}
+const vm = Vue.createApp(App).mount('#app')
+    </script>
+  </body>
+</html>

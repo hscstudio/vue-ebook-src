@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Belajar Vue</title>
+    <script src="https://unpkg.com/vue@next"></script>
+    <style type="text/css">
+
+      
+    </style>
+  </head>
+  <body>
+    <!-- mount point -->
+    <div id="app"></div>
+
+    <script>
+const App = {
+  template: `
+    <ul>
+      <li v-for="(book, index) in books" :key="index">
+        {{index}} : {{book}}
+      </li>
+    </ul>
+
+    <ul>
+      <li v-for="(value, key) in book" :key="key">
+        {{key}} : {{value}}
+      </li>
+    </ul>
+  `,
+  data () {
+    return {
+      books : [
+        'C++ High Performance', 
+        'Mastering Linux Security and Hardening', 
+        'Python Programming Blueprints', 
+        'Mastering PostgreSQL 10'
+      ],
+      book: {
+        id: 99,
+        title: 'C++ High Performance',
+        description: 'Write code that scales across CPU registers, multi-core, and machine clusters',
+        authors: 'Viktor Sehr, Björn Andrist',
+        publish_year: 2018,
+        price: 100000,
+      }  
+    }
+  }
+}
+const vm = Vue.createApp(App).mount('#app')
+    </script>
+  </body>
+</html>

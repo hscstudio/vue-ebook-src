@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Belajar Vue</title>
+    <!-- <script src="https://unpkg.com/vue@next"></script> -->
+    <script src="http://localhost:5000/vue.global.js"></script>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <script type="module">
+      const NotFoundComponent = { template: '<p>Page not found</p>' }
+      const HomeComponent = { template: '<p>Home page</p>' }
+      const AboutComponent = { template: '<p>About page</p>' }
+
+      const routes = {
+        '/': HomeComponent,
+        '/about': AboutComponent
+      }
+
+      const SimpleRouter = {
+        data: () => ({
+          currentRoute: window.location.pathname
+        }),
+
+        computed: {
+          activeComponent() {
+            return routes[this.currentRoute] || NotFoundComponent
+          }
+        },
+
+        created () {
+          window.addEventListener('popstate', () => {
+            this.currentRoute = window.location.pathname
+          })
+        },
+
+        template: `
+          <div>
+            <component :is="activeComponent"></component>
+          </div>
+        `
+      }
+
+      const app = Vue.createApp({
+        components: {
+          'simple-router': SimpleRouter
+        },
+        template: `
+          <div>
+            <ul>
+              <li><a href="/">Home</a></li>
+              <li><a href="/about">About</a></li>
+              <li><a href="/foo">Under Construction</a></li>
+            </ul>
+            <simple-router />
+          </div>
+        `
+      })
+      .mount('#app')
+    </script>
+  </body>
+</html>

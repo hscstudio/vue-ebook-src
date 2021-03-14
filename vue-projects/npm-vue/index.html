@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Belajar Vue pada NPM</title>
+  <script src="./node_modules/vue/dist/vue.js"></script>
+</head>
+<body>
+  <div id="app"></div>
+    <script>
+    var vm = new Vue({
+      el: '#app',
+      data: {
+        message: 'Vue on npm'
+      },
+      template: `<h1>{{ message }}</h1>`
+    })
+  </script>
+</body>
+</html>

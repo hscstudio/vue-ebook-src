@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Belajar Vue</title>
+    <!-- <script src="https://unpkg.com/vue@next"></script> -->
+    <script src="vue.global.js"></script>
+    <style type="text/css">
+      div.page{
+        margin: 10px auto;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+      }
+
+      div.control{
+        width: 300px;
+      }
+
+      div.control div{
+        margin: 5px 0;
+      }
+
+      div.control div label{
+        display: inline-block;
+        width: 60px;
+      }
+
+      ul{
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      ul li{
+        padding: 5px;
+        margin: 5px 0;
+        border: 1px solid #ddd;
+      }
+
+      ul li:nth-child(odd){
+        background-color: #f3f3f3;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <script type="module">
+
+const { ref, reactive, computed, provide, inject } = Vue 
+
+const ListBook = {
+  //inject: [ 'endpoint' ],
+  setup(props, context) {
+    const books = reactive([])
+    const keyword = ref('')
+    const sortType = ref('')
+    const loading = ref(false)
+
+    const fetchBooks = () => {
+      loading.value = true
+      // inject endpoint
+      const endpoint = inject('endpoint')
+      fetch(endpoint)
+        .then(response => {
+          return response.json()
+        })
+        .then(data => {
+          books.push(...data)
+        })
+        .finally(() => {
+          loading.value = false
+        })
+    }
+
+    fetchBooks()
+
+    const searchBook = (books, keyword) => {
+      return books.filter(book => {
+        return keyword==='' ? true : book.title.search(keyword) >= 0;
+      })
+    }
+    
+    const sortBook = (books, sortType='asc') => {
+      return books.sort((a, b) => {
+        if (sortType === 'asc') {
+          return a.title.localeCompare(b.title)
+        } else if (sortType === 'desc') {
+          return b.title.localeCompare(a.title)
+        } else {
+          return true
+        }
+      })
+    }
+
+    const displayBooks = computed(() => {
+      let localBooks = []
+      if (books) {
+        localBooks = books
+        localBooks = searchBook(localBooks, keyword.value)
+        localBooks = sortBook(localBooks, sortType.value)
+      }
+      return localBooks
+    })
+
+    return {
+      displayBooks,
+      keyword,
+      sortType
+    }
+  },
+  template: `
+    <div class="page">
+      <div class="control">
+        <div>
+          <label>Search: </label> 
+          <input type="text" v-model="keyword" />
+        </div>
+        <div>
+          <label>Sort: </label> 
+          <select v-model="sortType">
+            <option value="" disabled selected>Choose...</option>
+            <option value="asc">asc</option>
+            <option value="desc">desc</option>
+          </select>
+        </div>
+      </div>
+      <ul class="list">
+          <li v-for="book in displayBooks" key="book.id">
+          {{ book.title }}
+          </li>
+      </ul>
+    </div>
+  `
+}
+
+const app = Vue.createApp({
+  components: {
+    'list-book': ListBook
+  },
+  // provide() {
+  //   return {
+  //     endpoint: 'http://localhost:5000/ch06/books.json',
+  //   }
+  // },
+  setup (props) {
+    provide('endpoint', 'http://localhost:5000/ch06/books.json')
+  },
+  template: `
+      <div>
+        <list-book />
+        <teleport to="#app">
+          hehe
+        </teleport>
+      </div>
+  `
+})
+.mount('#app')
+    </script>
+  </body>
+</html>

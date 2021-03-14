@@ -1,0 +1,19 @@
+<html>
+<head>
+  <title>Contoh Manipulasi DOM</title>
+</head>
+<body>
+  <h1 id="title"> Selamat Datang </h1>
+
+  <script>
+  // mengakses DOM
+  const titleElement = document.getElementById('title')
+  console.log(titleElement); // <h1 id="title"> Selamat Datang </h1>
+
+  // memanipulasi DOM (mengubah teks pada heading)
+  setTimeout(() => {
+    titleElement.innerHTML = 'Sampai Jumpa'
+  }, 3000);
+  </script>
+</body>
+</html>

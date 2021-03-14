@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Belajar Vue</title>
+    <!-- <script src="https://unpkg.com/vue@next"></script> -->
+    <script src="vue.global.js"></script>
+    <style type="text/css">
+      .panel {
+          background: #fcfcfc;
+          border:2px solid #ddd;
+          border-radius: 5px;
+          padding: 5px;
+      }
+      .panel h1{
+        margin: 0 0 5px;
+        border-bottom: 1px solid #ddd;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <script>
+      const ListBook = {
+        data () {
+          return {
+            books: ['laravel', 'Vue']
+          }
+        },
+        template: `
+          <ul>
+            <li v-for="(book, index) in books">
+              <slot :book="book"></slot>
+            </li>
+          </ul>
+        `
+      }
+
+
+      // objek aplikasi Vue
+      const app = Vue.createApp({
+        components: {
+          'list-book': ListBook
+        },
+        template: `
+          <div>
+            <list-book v-slot="slotProps">
+              <h2>{{ slotProps.book }}</h2>
+            </list-book>
+          </div>
+        `
+      })
+      .mount('#app')
+    </script>
+  </body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Belajar Vue</title>
+    <!-- <script src="https://unpkg.com/vue@next"></script> -->
+    <script src="vue.global.js"></script>
+    <style type="text/css">
+      .layout {
+        display: flex;
+      }
+
+      .layout .sidebar{
+        flex: 25%;
+        min-height: 100vh;
+        padding: 5px 0 5px 5px;
+        border-right: 1px solid #ddd;
+      }
+
+      .layout .main{
+        flex: 75%;
+        padding: 5px;
+        border: 1px solid #ddd;
+        border-left-width: 0;
+      }
+
+      h2{
+        margin: 0;
+      }
+
+      ul{
+        list-style: none;
+        padding: 0;
+        margin: 5px -1px;
+      }
+
+      ul li{
+        border: 1px solid #ddd;
+        border-right-width: 0;
+        background-color: #eee;
+        padding: 5px;
+        margin-bottom: 3px;
+        border-radius: 5px 0 0 5px;
+      }
+
+      ul li:hover{
+        background-color: #fff;
+        cursor: pointer;
+      }
+
+      .page{
+        min-height: 100px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <script>
+      const Home = {
+        template: `
+          <div class="page">
+            <h2>Halaman Home</h2>
+            <p>Selamat datang di website kami</p>
+          </div>
+        `
+      }
+
+      const About = {
+        template: `
+          <div class="page">
+            <h2>Halaman About</h2>
+            <p>Kami adalah konsultan pengembangan sistem informasi</p>
+          </div>
+        `
+      }
+
+      const app = Vue.createApp({
+        components: {
+          'home': Home,
+          'about': About,
+        },
+        data () {
+          return {
+            activeComponent: 'home'
+          }
+        },
+        template: `
+          <div class="layout">
+            <div class="sidebar">
+              <ul>
+                <li @click="activeComponent='home'">Home</li>
+                <li @click="activeComponent='about'">About</li>
+              </ul>
+            </div>
+            <div class="main">
+              <transition name="fade" mode="out-in">
+                <component :is="activeComponent"></component>
+              </transition>
+            </div>
+          </div>
+        `
+      })
+      .mount('#app')
+    </script>
+  </body>
+</html>

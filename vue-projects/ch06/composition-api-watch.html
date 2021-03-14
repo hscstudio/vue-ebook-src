@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Belajar Vue</title>
+    <!-- <script src="https://unpkg.com/vue@next"></script> -->
+    <script src="vue.global.js"></script>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <script type="module">
+const { ref, watch } = Vue
+
+const InputDistance = {
+  template: `
+    <div>
+      Miles : <input v-model="miles" /> 
+      <br />
+      Kilometers : <input v-model="kilometers" />
+    </div>
+  `,
+  setup (props, context) {
+    const miles = ref(null)
+    const kilometers = ref(null)
+
+    watch(miles, (newValue, oldValue) => {
+      const newKilometers = newValue * 1.6
+      kilometers.value = newKilometers
+    })
+
+    watch(kilometers, (newValue, oldValue) => {
+      const newMiles = newValue > 0 ? newValue / 1.6 : 0
+      miles.value = newMiles
+    })
+
+    return { miles, kilometers }
+  }
+}
+const vm = Vue
+  .createApp(InputDistance)
+  .mount('#app')
+    </script>
+  </body>
+</html>

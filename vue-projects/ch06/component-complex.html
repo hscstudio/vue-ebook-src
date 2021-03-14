@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Belajar Vue</title>
+    <!-- <script src="https://unpkg.com/vue@next"></script> -->
+    <script src="vue.global.js"></script>
+    <style type="text/css">
+      div.page{
+        margin: 10px auto;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+      }
+
+      div.control{
+        width: 300px;
+      }
+
+      div.control div{
+        margin: 5px 0;
+      }
+
+      div.control div label{
+        display: inline-block;
+        width: 60px;
+      }
+
+      ul{
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      ul li{
+        padding: 5px;
+        margin: 5px 0;
+        border: 1px solid #ddd;
+      }
+
+      ul li:nth-child(odd){
+        background-color: #f3f3f3;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <script>
+      const ListBook = {
+        props: ['endpoint'],
+        data () {
+          return {
+            books: [],
+            loading: false,
+            keyword: '' ,
+            sortType: '' 
+          }
+        },
+        computed: {
+          displayBooks() {
+            let books = this.books
+            books = this.searchBook(books, this.keyword)
+            books = this.sortBook(books, this.sortType)
+            return books
+          }
+        },
+        methods: {
+          fetchBooks() {
+            this.loading = true
+            fetch(this.endpoint)
+              .then(response => {
+                return response.json()
+              })
+              .then(data => {
+                this.books = data
+                this.loading = false
+              })
+          },
+          searchBook(books, keyword) {
+            return books.filter(book => {
+              return keyword==='' ? true : book.title.search(keyword) >= 0;
+            })
+          },
+          sortBook(books, sortType='asc') {
+            return books.sort((a, b) => {
+              if (sortType === 'asc') {
+                return a.title.localeCompare(b.title)
+              } else if (sortType === 'desc') {
+                return b.title.localeCompare(a.title)
+              } else {
+                return true
+              }
+            })
+          }
+        },
+        created() {
+          this.fetchBooks()
+        },
+        template: `
+          <div class="page">
+            <div class="control">
+              <div>
+                <label>Search: </label> 
+                <input type="text" v-model="keyword" />
+              </div>
+              <div>
+                <label>Sort: </label> 
+                <select v-model="sortType">
+                  <option value="" disabled selected>Choose...</option>
+                  <option value="asc">asc</option>
+                  <option value="desc">desc</option>
+                </select>
+              </div>
+            </div>
+            <div v-if="loading" class="loading">loading...</div>
+            <ul class="list">
+              <li v-for="book in displayBooks" key="book.id">
+                {{ book.title }}
+              </li>
+            </ul>
+          </div>
+        `
+      }
+
+      const app = Vue.createApp({
+        components: {
+          'list-book': ListBook
+        },
+        template: `
+          <div>
+            <list-book endpoint="http://localhost:5000/ch06/books.json" />
+          </div>
+        `
+      })
+      .mount('#app')
+    </script>
+  </body>
+</html>

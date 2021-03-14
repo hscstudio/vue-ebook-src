@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Belajar Vue</title>
+    <!-- <script src="https://unpkg.com/vue@next"></script> -->
+    <script src="vue.global.js"></script>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <script>
+      // membuat komponen Welcome
+      const Welcome = {
+        data () {
+          return {
+            gretting: 'Selamat Datang'
+          }
+        },
+        props: ['name'],
+        template: '<h1> {{gretting}} {{name}} </h1>'
+      }
+
+
+      // objek aplikasi Vue
+      const app = Vue.createApp({
+        components: {
+          'welcome': Welcome
+        },
+        template: `
+          <div>
+            <welcome name="Hafid" />
+            <welcome name="Azam" />
+            <welcome name="Fulan" />
+          </div>
+        `
+      })
+      .mount('#app')
+    </script>
+  </body>
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Belajar Vue</title>
+    <script src="https://unpkg.com/vue@next"></script>
+    <style>
+      .title {
+        color: green;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- mount point -->
+    <div id="app">
+      {{ message2 }}
+    </div>
+
+    <script>
+    const Input = {
+      data() {
+        return {
+          keyword: null,
+          resultSearch: null
+        }
+      },
+      template: `
+        <div>
+          <input type="text" placeholder="type keyword..." v-model="keyword" v-on:keyup.enter="onSearch" />
+          <p> {{ resultSearch }} </p>
+        </div>
+      `,
+      methods: {
+        onSearch () {
+          const keyword = this.keyword
+          this.resultSearch = 'Hasil pencarian: ' + this.keyword
+        }
+      }
+      
+    }
+
+    const Main = {
+      render () {
+        return Vue.h(Input)
+      },
+      // data() {
+      //   return {
+      //     message2: 'Hello World',
+      //   }
+      // },
+      // errorCaptured: function(err, component, details) {
+      //   console.log(err)
+      //   console.log(component)
+      //   console.log(details)
+      //   return false
+      // },
+      // renderTracked({ key, target, type }) {
+      //   console.log({ key, target, type })
+      // },
+      // renderTriggered({ key, target, type }) {
+      //   console.log({ key, target, type })
+      // },
+    }
+
+function decrement() {
+  vm.counter--
+}
+
+const Counter = {
+  template: `
+    <div>
+      Nilai saat ini: {{counter}}
+      <button onclick="vm.increment()">+</button>
+      <button onclick="vm.decrement()">-</button>
+    </div>
+  `,
+  data() {
+    return {
+      counter: 0
+    }
+  },
+  methods: {
+    increment() {
+      this.counter++
+    },
+    decrement: decrement
+  }
+}
+
+
+const EvenOdd = {
+  template: `
+    <div>
+      Methods: {{checkNum()}} <button onclick="vm.num1++"> + </button>
+      <hr />
+      Computed: {{numType}} <button onclick="vm.num2++"> + </button>
+    </div>
+  `,
+  data() {
+    return {
+      num1: 0,
+      num2: 0
+    }
+  },
+  methods: {
+    checkNum() {
+        console.log('methods call')
+        return this.num1 % 2 === 0 ? 'EVEN' : 'ODD'
+    }
+  },
+  computed: {
+    numType() {
+        console.log('computed call')
+        return this.num2 % 2 === 0 ? 'EVEN' : 'ODD'
+    }
+  }
+}
+
+const BadComputed = {
+    template: `
+      <div>Waktu saat ini: {{now}}</div>
+    `,
+    computed: {
+        now () {
+            return Date.now()
+        }
+    }
+}
+
+const GoodComputed = {
+    template: `
+      <div>Waktu saat ini: {{now}} </div>
+    `,
+    data () {
+      return {
+        timeNow: ''
+      }
+    },
+    computed: {
+        now () {
+          return this.timeNow
+        }
+    }
+}
+
+const InputName = {
+  template: `
+  <div>
+    Full name: <input onchange="vm.fullName=this.value" /> 
+    <br />
+    First name: {{firstName}} <br />
+    Last name: {{lastName}} <br />
+    Full name: {{fullName}}
+  </div>
+  `,
+  data () {
+    return {
+      firstName: '',
+      lastName: ''
+    }
+  },
+  computed: {
+    fullName: {
+      get () {
+        return `${this.firstName} ${this.lastName}`
+      },
+      set (fullName) {
+        const names = fullName.split(' ')
+        const [ firstName, ...lastName ] = names
+        this.firstName = firstName
+        this.lastName = lastName.join(' ')
+      }
+    }
+  },
+  watch: {
+    fullName (newValue, oldValue) {
+      console.log('update from '+oldValue+' to '+newValue)
+    }
+  }
+}
+
+const InputDistance = {
+  template: `
+    <div>
+      Miles : <input id="miles" onchange="vm.miles=this.value" /> 
+      <br />
+      Kilometers : <input id="kilometers" onchange="vm.kilometers=this.value" /> 
+    </div>
+  `,
+  data () {
+    return {
+      miles: '',
+      kilometers: ''
+    }
+  },
+  watch: {
+    miles (newValue, oldValue) {
+      const kilometers = newValue * 1.6
+      this.kilometers = kilometers
+      document.getElementById('kilometers').value = kilometers
+    },
+    kilometers (newValue, oldValue) {
+      const miles = newValue > 0 ? newValue / 1.6 : 0
+      this.miles = miles
+      document.getElementById('miles').value = miles
+    }
+  }
+}
+const vm = Vue
+  .createApp(InputDistance)
+  .mount('#app')
+
+// setInterval(()=>{
+//     vm.timeNow = Date.now()
+// },1000)
+
+    // setInterval(() => {
+    //   vm.increment()
+    // }, 1000);
+    </script>
+  </body>
+</html>

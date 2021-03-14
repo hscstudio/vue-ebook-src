@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Belajar Vue</title>
+    <!-- <script src="https://unpkg.com/vue@next"></script> -->
+    <script src="vue.global.js"></script>
+    <style type="text/css">
+      div.page{
+        margin: 10px auto;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+      }
+
+      div.control{
+        width: 300px;
+      }
+
+      div.control div{
+        margin: 5px 0;
+      }
+
+      div.control div label{
+        display: inline-block;
+        width: 60px;
+      }
+
+      ul{
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      ul li{
+        padding: 5px;
+        margin: 5px 0;
+        border: 1px solid #ddd;
+      }
+
+      ul li:nth-child(odd){
+        background-color: #f3f3f3;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <script type="module">
+      const { ref, reactive, onMounted, computed, toRefs, toRef } = Vue 
+
+      const Counter = {
+        props: { 
+          initial: {
+            type: Number,
+            required: true
+          }
+        },
+        setup(props, context) {
+            const counter = ref(props.initial)
+
+            /* CARA DEKLARASI */
+
+          // const nama_variabel = ref(nilai_default)
+          // const counter = ref(0)      // number
+          const message = ref('')     // string
+          const status = ref(true)    // boolean
+
+          // const nama_variabel = reactive(nilai_default)
+          const user = reactive({ id: 1, name: 'Ronaldo'})
+          const books = reactive([ 'Laravel' ])
+
+          /* CARA UPDATE */
+
+          counter.value = 3
+          message.value = 'Halo'
+          status.value = true
+
+          user.name = 'Messi'
+          books.push([ 'Vue' ])
+
+          /* CARA AKSES */
+
+          console.log(
+              '\ncounter: '+counter.value, 
+              '\nmessage: '+message.value, 
+              '\nstatus: '+status.value,
+
+              '\nuser: '+user.name,
+              '\nbooks: '+books
+          )
+
+            return { counter, message, status, user, books }
+        },
+        template: `
+          <div>
+            {{ counter }} {{ message }} {{ status }} {{ user }} {{ books }}
+            <button @click="(counter > 0) && counter--"> - </button>
+              {{ counter }}
+            <button @click="counter++"> + </button>
+          </div>
+        `
+      }
+      
+      const dataBooks = [
+        {id:1,title:"Laravel"},
+        {id:2,title:"Vue"},
+        {id:3,title:"PHP"},
+        {id:4,title:"React"},
+        {id:5,title:"Express"},
+        {id:6,title:"Javascript"},
+        {id:7,title:"Node"}
+      ]
+
+      const LisBook = {
+        setup(props, context) {
+          const books = reactive(dataBooks)
+          return { books }
+        },
+        template: `
+          <div class="page">
+            <ul class="list">
+              <li v-for="book in books" key="book.id">
+                {{ book.title }}
+              </li>
+            </ul>
+          </div>
+        `
+      }
+
+      const app = Vue.createApp({
+        components: {
+          // 'list-book': LisBook
+          'counter': Counter
+        },
+        template: `
+          <div>
+            <counter :initial="0" />
+          </div>
+        `
+      })
+      .mount('#app')
+    </script>
+  </body>
+</html>

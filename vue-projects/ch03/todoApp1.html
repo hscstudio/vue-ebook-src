@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Belajar Vue</title>
+    <script src="https://unpkg.com/vue@next"></script>
+    <style type="text/css">
+      #app{
+        width: 250px;
+      }
+      input{
+        width: 100%;
+        padding: 5px 3px;
+        box-sizing: border-box;
+      }
+      ul {
+        list-style: none;
+        padding: 0;
+      }
+      ul li{
+        border: 1px solid #ddd;
+        padding: 5px;
+        margin-bottom: 5px;
+      }
+      ul li:nth-child(odd){
+        background-color: #efefef;
+      }
+      .done{
+        text-decoration: line-through;
+        color: #aaa;
+      }
+      ul li span {
+        padding: 0 5px;
+      }
+      ul li span:hover {
+       cursor: pointer;
+      }
+      ul li button {
+        float: right;
+      }
+      button.active{
+        background-color: #F7DC6F;
+      }
+      /*
+      .center{
+        text-align: center;
+      } */
+    </style>
+  </head>
+  <body>
+    <!-- mount point -->
+    <div id="app"></div>
+
+    <script>
+const App = {
+  template: `
+    <h1>TodoApp</h1>
+
+    <input @keyup.enter="addTask($event.target)" placeholder="masukkan task" />
+
+    <ul>
+      <li v-for="(task, index) in displayTasks" :key="index">
+        <span :class="{ done: !task.status }" @click="task.status=!task.status">
+        {{task.title}}
+        </span>
+        <button @click="this.tasks.splice(index, 1)"> x </button>
+      </li>
+    </ul>
+
+    <div>
+      Filter: 
+      <button :class="{ active: filter === '' }" @click="filter= '' "> SEMUA </button>
+      <button :class="{ active: filter === 'new' }" @click="filter= 'new' "> BARU </button>
+      <button :class="{ active: filter === 'done' }" @click="filter= 'done' "> SELESAI </button>
+    </div>
+    <div style="margin-top: 5px">
+      Sort: 
+      <button :class="{ active: sort === '' }" @click="sort= '' "> SEMUA </button>
+      <button :class="{ active: sort === 'asc' }" @click="sort= 'asc' "> ASC </button>
+      <button :class="{ active: sort === 'desc' }" @click="sort= 'desc' "> DESC </button>
+    </div>
+  `,
+  data () {
+    return {
+      tasks: [
+        { title: 'Review fitur login', status: false },
+        { title: 'Memperbaiki fitur login', status: true },
+        { title: 'Meng-commit fitur login', status: true }
+      ],
+      filter: '',
+      sort: ''
+    }
+  },
+  methods: {
+    addTask(field) {
+      // this.tasks.push(field.value);
+      this.tasks.push({
+        title: field.value,
+        status: true
+      })
+      field.value=''
+    }
+  },
+  computed: {
+    displayTasks() {
+      return this.tasks.filter(task => {
+        if (this.filter === 'new') return task.status
+        else if (this.filter === 'done') return !task.status
+        else return true
+      })
+      // tambahkan fungsi sort
+      .sort((a, b) => {
+        if (this.sort === 'asc') {
+          return a.title.localeCompare(b.title)
+        } else if (this.sort === 'desc') {
+          return b.title.localeCompare(a.title)
+        }
+        return true
+      })
+    }
+  },
+}
+const vm = Vue.createApp(App).mount('#app')
+    </script>
+  </body>
+</html>

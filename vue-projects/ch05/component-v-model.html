@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Belajar Vue</title>
+    <!-- <script src="https://unpkg.com/vue@next"></script> -->
+    <script src="vue.global.js"></script>
+    <style type="text/css">
+      .card {
+          background: #fdfdfd;
+          border:1px solid #ddd;
+          border-radius: 5px;
+          margin: 5px;
+          padding: 5px;
+          width: 150px;
+          float: left;
+          text-align: center;
+      }
+      .card h3{
+        margin: 0;
+      }
+      .card img{
+        width: 100%;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <script>
+      const CustomInput = {
+        props: ['modelValue'],
+        emits: ['update:modelValue'],
+        template: `
+          <input
+            :value="modelValue"
+            @input="$emit('update:modelValue', $event.target.value)"
+          />
+        `
+      }
+
+
+      // objek aplikasi Vue
+      const app = Vue.createApp({
+        data () {
+          return {
+            searchText: ''
+          }
+        },
+        components: {
+          'custom-input': CustomInput
+        },
+        template: `
+          <div>
+            <h1> Cari buku favoritmu! </h1>
+            <custom-input v-model="searchText"></custom-input>
+            <custom-input
+              :model-value="searchText"
+              @update:model-value="searchText = $event"
+            />
+            <hr />
+            <div>
+              keyword: {{ searchText }}
+            </div>
+          </div>
+        `
+      })
+      .mount('#app')
+    </script>
+  </body>
+</html>

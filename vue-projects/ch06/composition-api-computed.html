@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Belajar Vue</title>
+    <!-- <script src="https://unpkg.com/vue@next"></script> -->
+    <script src="vue.global.js"></script>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <script type="module">
+const { ref, computed } = Vue
+
+const InputName = {
+  template: `
+    <div>
+      First name: <input v-model="firstName" /> 
+      <br />
+      Last name: <input v-model="lastName" /> 
+      <br />
+      Full name: {{fullName}}
+    </div>
+  `,
+  setup (props, context) {
+    // membuat pengganti properti data
+    const firstName = ref('')
+    const lastName = ref('')
+
+    // membuat fungsi computed
+    const fullName = computed(() => {
+      return `${firstName.value} ${lastName.value}`
+    })
+
+    // expose variabel agar dapat digunakan pada template
+    return {
+      firstName, lastName, fullName
+    }
+  }
+}
+const app = Vue
+  .createApp(InputName)
+  .mount('#app')
+    </script>
+  </body>
+</html>

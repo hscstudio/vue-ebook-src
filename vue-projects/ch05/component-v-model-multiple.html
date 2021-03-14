@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Belajar Vue</title>
+    <!-- <script src="https://unpkg.com/vue@next"></script> -->
+    <script src="vue.global.js"></script>
+    <style type="text/css">
+      .card {
+          background: #fdfdfd;
+          border:1px solid #ddd;
+          border-radius: 5px;
+          margin: 5px;
+          padding: 5px;
+          width: 150px;
+          float: left;
+          text-align: center;
+      }
+      .card h3{
+        margin: 0;
+      }
+      .card img{
+        width: 100%;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <script>
+      const NameInput = {
+        props: ['firstname', 'lastname'],
+        emits: ['update:firstname', 'update:lastname'],
+        template: `
+          <div>
+            Fullname:
+            <input
+              :value="firstname"
+              @input="$emit('update:firstname', $event.target.value)"
+            />
+            <input
+              :value="lastname"
+              @input="$emit('update:lastname', $event.target.value)"
+            />
+          </div>
+        `
+      }
+
+
+      // objek aplikasi Vue
+      const app = Vue.createApp({
+        data () {
+          return {
+            firstName: '',
+            lastName: ''
+          }
+        },
+        components: {
+          'name-input': NameInput
+        },
+        template: `
+          <div>
+            <name-input 
+              v-model:firstname="firstName"
+              v-model:lastname="lastName"
+            >
+            </name-input>
+            <hr />
+            <div>
+              fullname: {{ firstName+' '+lastName }}
+            </div>
+          </div>
+        `
+      })
+      .mount('#app')
+    </script>
+  </body>
+</html>

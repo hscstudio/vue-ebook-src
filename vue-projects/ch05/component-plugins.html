@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Belajar Vue</title>
+    <!-- <script src="https://unpkg.com/vue@next"></script> -->
+    <script src="vue.global.js"></script>
+    <style type="text/css">
+      .layout {
+        display: flex;
+      }
+
+      .layout .sidebar{
+        flex: 25%;
+        min-height: 100vh;
+        padding: 5px 0 5px 5px;
+        border-right: 1px solid #ddd;
+      }
+
+      .layout .main{
+        flex: 75%;
+        padding: 5px;
+        border: 1px solid #ddd;
+        border-left-width: 0;
+      }
+
+      h2{
+        margin: 0;
+      }
+
+      ul{
+        list-style: none;
+        padding: 0;
+        margin: 5px -1px;
+      }
+
+      ul li{
+        border: 1px solid #ddd;
+        border-right-width: 0;
+        background-color: #eee;
+        padding: 5px;
+        margin-bottom: 3px;
+        border-radius: 5px 0 0 5px;
+      }
+
+      ul li:hover{
+        background-color: #fff;
+        cursor: pointer;
+      }
+
+      .page{
+        min-height: 100px;
+      }
+
+      .fade-enter-active,
+      .fade-leave-active {
+        transition: opacity 0.3s ease;
+      }
+
+      .fade-enter-from,
+      .fade-leave-to {
+        opacity: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <script type="module">
+      import hello from './plugins/hello.js' 
+      const app = Vue.createApp({
+        created() {
+          // memanggil method log yang didefinisikan pada global method plugin
+          this.log('message dari komponen utama')
+          this.$log()
+        },
+        template: `
+          <div>
+            Belajar Plugins
+            <hr />
+            <input type="text" v-focus />
+          </div>
+        `
+      })
+      app.use(hello, {
+        dataFromOption: 'data dari option'
+      })
+      app.mount('#app')
+    </script>
+  </body>
+</html>

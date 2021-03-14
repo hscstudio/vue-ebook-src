@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Belajar Vue</title>
+    <!-- <script src="https://unpkg.com/vue@next"></script> -->
+    <script src="vue.global.js"></script>
+    <style type="text/css">
+      div.page{
+        margin: 10px auto;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+      }
+
+      div.control{
+        width: 300px;
+      }
+
+      div.control div{
+        margin: 5px 0;
+      }
+
+      div.control div label{
+        display: inline-block;
+        width: 60px;
+      }
+
+      ul{
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      ul li{
+        padding: 5px;
+        margin: 5px 0;
+        border: 1px solid #ddd;
+      }
+
+      ul li:nth-child(odd){
+        background-color: #f3f3f3;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <script type="module">
+      const { ref, reactive, onMounted, computed, toRefs, toRef } = Vue 
+
+      const Hello = {
+        props: [ "message" ],
+        setup(props, context) {
+            // kode logic disini
+            // const { message } = toRefs(props)
+            const message = toRef(props, 'message')
+            console.log( message )
+            const var1 = "testing saja"
+            return { var1 }
+        },
+        template: `<div>{{ message }} - {{ var1 }}</div>`
+      }
+
+      const app = Vue.createApp({
+        components: {
+          'hello': Hello
+        },
+        template: `
+          <div>
+            <hello message="Hello apa kabar?"/>
+            <hello />
+          </div>
+        `
+      })
+      .mount('#app')
+    </script>
+  </body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Belajar Vue</title>
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="https://unpkg.com/vuex@next"></script>
+  </head>
+  <body>
+    <div id="app"></div>
+
+<script type="module">
+const { createApp } = Vue
+const { createStore } = Vuex
+// membuat store
+const store = createStore({
+  strict: true,
+  state () {
+    return {
+      count: 0,
+      books: [
+        { id: 1, title: 'Vue', publish: true },
+        { id: 2, title: 'Laravel', publish: false },
+        { id: 3, title: 'React', publish: false },
+        { id: 4, title: 'Express', publish: true },
+      ] // <==
+    }
+  },
+  mutations: {
+    increment (state) {
+      state.count++
+    },
+    setBooks(state, books){
+      state.books = books
+    }
+  },
+  getters: {
+    publishBooks (state) {
+      return state.books.filter(book => book.publish)
+    },
+    publishBooksCount (state, getters) {
+      return getters.publishBooks.length
+    }
+  },
+  actions: {
+    increment (context) {
+      context.commit('increment')
+    },
+    async getBooks (context, payload) {
+      const response = await fetch(payload)
+      const data = await response.json()
+      context.commit('setBooks', data)
+    }
+  }
+})
+
+const app = createApp({ 
+  setup() {
+    const store = Vuex.useStore()
+    const count = Vue.computed(() => store.state.count)
+    const increment = () => {
+      store.dispatch('increment')
+    }
+
+    store.dispatch('getBooks', 'http://localhost:5000/books.json')
+    const books = Vue.computed(() => store.state.books)
+    // const publishBooks = Vue.computed(() => store.getters.publishBooks )
+    // console.log(publishBooks.value)
+
+    return { count, increment, store, books }
+  },
+  template: `
+    <div>
+      {{ count }}
+      <button @click="increment">+</button>
+      <ul>
+        <li v-for="book in books">{{book.title}}</li>
+      </ul>
+    </div>
+  `
+})
+app.use(store)
+app.mount('#app')
+</script>
+  </body>
+</html>

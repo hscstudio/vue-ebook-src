@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Belajar Vue</title>
+    <!-- <script src="https://unpkg.com/vue@next"></script> -->
+    <script src="http://localhost:5000/vue.global.js"></script>
+  </head>
+  <body>
+    <div id="app"></div>
+
+<script type="module">
+import CounterDisplay from "./counter-display.js";
+import CounterControl from "./counter-control.js";
+import store from "./store.js"
+
+Vue.createApp({
+  setup() {
+    Vue.provide('store', store)
+  },
+  components: {
+    'counter-display': CounterDisplay,
+    'counter-control': CounterControl
+  },
+  template: `
+    <div>
+      <counter-display />
+      <counter-control />
+      <hr />
+      <counter-display />
+      <counter-control />
+    </div>
+  `
+}).mount('#app')
+</script>
+  </body>
+</html>

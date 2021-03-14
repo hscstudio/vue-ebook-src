@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Belajar Vue</title>
+    <!-- <script src="https://unpkg.com/vue@next"></script> -->
+    <script src="vue.global.js"></script>
+    <style type="text/css">
+      .panel {
+          background: #fcfcfc;
+          border:2px solid #ddd;
+          border-radius: 5px;
+          padding: 5px;
+      }
+      .panel h1{
+        margin: 0 0 5px;
+        border-bottom: 1px solid #ddd;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <script>
+      const Panel = {
+        template: `
+          <div class="panel">
+            <slot name="title"></slot>
+            <slot></slot>
+          </div>
+        `
+      }
+
+
+      // objek aplikasi Vue
+      const app = Vue.createApp({
+        components: {
+          'panel': Panel
+        },
+        template: `
+          <div>
+            <panel>
+              <template #title>
+                <h1>Informasi</h1>
+              </template>
+
+              <template v-slot:default>
+                <table border="1" width="100%">
+                <tbody>
+                  <tr>
+                    <th>No</th>
+                    <th>Judul</th>
+                  </tr>
+                  <tr>
+                    <td>1</td>
+                    <td>Laravel</td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td>Vue</td>
+                  </tr>
+                </tbody>
+                </table>
+              </template>
+            </panel>
+          </div>
+        `
+      })
+      .mount('#app')
+    </script>
+  </body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Belajar Vue Router</title>
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="https://unpkg.com/vue-router@next"></script>
+    <style type="text/css">
+    fade-enter-active,
+    .fade-leave-active {
+      transition: opacity 1s ease;
+    }
+
+    .fade-enter-from,
+    .fade-leave-to {
+      opacity: 0;
+    }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <script type="module">
+      // -1 deklarasikan global variabel
+      const isLogin = Vue.ref(false) // penanda login pengguna
+
+      // 0 Import Komponen
+      import ListBook from './list-book.js'
+      import Book from './book.js'
+
+      // 1. Deklarasikan komponen
+      const Home = { template: '<div>Home</div>' }
+      const About = { 
+        template: '<div>About</div>',
+        beforeRouteLeave (to, from) {
+          const answer = window.confirm('Yakin mau keluar?')
+          if (!answer) return false
+        }
+      }
+      const NotFound = { template: '<div>NotFound</div>' }
+      const Login = { 
+        setup (props, context) {
+          const router = VueRouter.useRouter()
+          const login = () => {
+            isLogin.value = true
+            alert('login berhasil')
+            router.push('/')
+          }
+
+          return { login }
+        },
+        template: '<div><button @click="login()">Login</button></div>',
+      }
+
+      // 2. Definisikan route, untuk memetakan route dengan komponen
+      const routes = [
+        { path: '/', component: Home },
+        { path: '/about', component: About },
+        { path: '/list-book', component: ListBook, meta: { auth: true } },
+        { path: '/book/:id(\\d+)', component: Book, meta: { auth: true } },
+        { path: '/login', component: Login },
+        { path: '/:catchAll(.*)', component: NotFound }
+        // { path: '/:pathMatch(.*)*', component: NotFound }
+      ]
+
+      // 3. Buat objek router
+      const router = VueRouter.createRouter({
+          history: VueRouter.createWebHistory(),
+          routes, // bentuk pendek dari `routes: routes`
+      })
+
+      router.beforeEach((to, from) => {
+        const { auth } = to.meta
+        if (auth) {
+          if (!isLogin.value) {
+            alert('hanya untuk yang berhak saja!')
+            return '/login'
+          }
+        }
+      })
+
+      // 4. Buat objek aplikasi Vue yang menampung template router
+      const app = Vue.createApp({
+        setup (props, context) {
+          const router = VueRouter.useRouter()
+          const logout = () => {
+            isLogin.value = false
+            alert('logout berhasil')
+            router.push('/')
+          }
+          return { isLogin, logout }
+        },
+        template: `
+          <div>
+            <ul>
+                <li><router-link to="/">Home</router-link></li>
+                <li><router-link to="/about">About</router-link></li>
+                <li><router-link to="/list-book">List Book</router-link></li>
+
+                <li v-if="!isLogin"><router-link to="/login">Login</router-link></li>
+                <li v-if="isLogin" @click="logout()">Logout</li>
+            </ul>
+            <router-view v-slot="{ Component }">
+              <transition>
+                <component :is="Component" />
+              </transition>
+            </router-view>
+          </div>
+        `
+      })
+
+      // daftarkan router pada objek aplikasi Vue
+      app.use(router)
+
+      // mount ke #app
+      app.mount('#app')
+    </script>
+  </body>
+</html>

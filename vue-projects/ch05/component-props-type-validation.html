@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Belajar Vue</title>
+    <!-- <script src="https://unpkg.com/vue@next"></script> -->
+    <script src="vue.global.js"></script>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <script>
+      const Ebook = {
+        props: { 
+          'title': {
+            type: String,
+            required: true
+          }, 
+          'stock': {
+            type: Number,
+            default: 1
+          }, 
+          'authors': Array, 
+          'level': {
+            type: String,
+            validator: function(value) {
+              return ['beginner', 'intermediate', 'advanced'].indexOf(value) !== -1
+            },
+            default: 'beginner'
+          },
+          'status': {
+            type: Boolean,
+            default: true
+          }
+        },
+        template : `
+            <div>
+                <h3>{{ title }}</h3>
+                <ul>
+                  <li>stock: {{stock > 0 ? stock : '-'}}</li>
+                  <li>authors: {{authors.join(', ')}}</li>
+                  <li>level: {{level}}</li>
+                  <li>status: {{status ? 'publish' : 'draft'}}</li>
+                </ul>
+            </div>
+        `
+      }
+
+      // objek aplikasi Vue
+      const app = Vue.createApp({
+        components: {
+          'ebook': Ebook
+        },
+        data () {
+          return {
+            title: 'Vue',
+            stock: 7,
+            authors: ['azam', 'hafid'],
+            status: true
+          }
+        },
+        template: `
+          <div>
+            <ebook :title="title" :stock="stock" :authors="authors" :status="status"/>
+          </div>
+        `
+      })
+      .mount('#app')
+    </script>
+  </body>
+</html>

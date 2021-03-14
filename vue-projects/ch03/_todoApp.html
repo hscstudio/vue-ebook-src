@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Belajar Vue</title>
+    <script src="https://unpkg.com/vue@next"></script>
+    <style type="text/css">
+      #app{
+        width: 200px;
+      }
+      form {
+        width: 100%;
+      }
+      form input{
+        display: block;
+        width: 190px;
+        padding: 5px 3px;
+      }
+      ul {
+        list-style: none;
+        padding: 0;
+      }
+      ul li{
+        border: 1px solid #ddd;
+        padding: 5px;
+        margin-bottom: 5px;
+      }
+      ul li:nth-child(odd){
+        background-color: #efefef;
+      }
+      ul li span {
+        padding: 0 5px;
+      }
+      ul li button {
+        float: right;
+      }
+      .done{
+        text-decoration: line-through;
+      }
+      .center{
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- mount point -->
+    <div id="app"></div>
+
+    <script>
+const App = {
+  template: `
+    <h1>TodoApp</h1>
+
+    <form @submit.prevent="add($event)">
+      <input placeholder="masukkan task" />
+    </form>
+
+    <ul>
+      <li v-for="(task, index) in displayTasks" :key="index">
+        <input type="checkbox" :checked="task.status=='done'" @click="done(index)" />
+        <span :class="{ done: task.status=='done' }">{{task.title}}</span> 
+        <button @click="remove(index)"> x </button>
+      </li>
+    </ul>
+
+    <div class="center">
+      Filter: 
+      <button @click="filter=''"> all </button>
+      <button @click="filter='new'"> new </button>
+      <button @click="filter='done'"> done </button>
+    </div>
+    <div class="center">
+      Sort: 
+      <button @click="sort = '' "> reset </button>
+      <button @click="sort = 'asc' "> asc </button>
+      <button @click="sort = 'desc' "> desc </button>
+    </div>
+  `,
+  data () {
+    return {
+      tasks: [
+        { title: 'abc', status: 'new' },
+        { title: 'def', status: 'done' },
+        { title: 'ghi', status: 'new' },
+        { title: 'jkl', status: 'done' }
+      ],
+      filter: '' ,
+      sort: ''  
+    }
+  },
+  computed: {
+    displayTasks() {
+      return this.tasks
+        .filter(task => {
+          return this.filter=='' ? true : task.status==this.filter
+        })
+        .sort((a, b) => {
+          if (this.sort === 'asc') {
+            return a.title.localeCompare(b.title)
+          } else if (this.sort === 'desc') {
+            return b.title.localeCompare(a.title)
+          }
+          return true
+        })
+    }
+  },
+  methods: {
+    add(event) {
+      const newTask = event.target[0].value
+      this.tasks.push({
+        title: newTask,
+        status: 'new'
+      })
+      event.target[0].value = ''
+      event.target[0].focus()
+    },
+    remove(index) {
+      this.tasks.splice(index, 1)
+    },
+    done(index) {
+      const currentTask = this.tasks[index]
+      const updateTask = {
+        title: currentTask.title,
+        status: (currentTask.status == 'done') ? 'done' : 'new'
+      }
+      this.tasks.splice(index, 1, updateTask)
+    }
+  }
+}
+const vm = Vue.createApp(App).mount('#app')
+    </script>
+  </body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Belajar Vue</title>
+    <!-- <script src="https://unpkg.com/vue@next"></script> -->
+    <script src="vue.global.js"></script>
+    <style type="text/css">
+      .card {
+          background: #fdfdfd;
+          border:1px solid #ddd;
+          border-radius: 5px;
+          margin: 5px;
+          padding: 5px;
+          width: 150px;
+          float: left;
+          text-align: center;
+      }
+      .card h3{
+        margin: 0;
+      }
+      .card img{
+        width: 100%;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <script>
+      const Book = {
+        props: [ 'title', 'image' ],
+        data () {
+          return {
+            qty: 0
+          }
+        },
+        emits: [ 'select' ],
+        template : `
+          <div class="card">
+            <h3>{{ title }}</h3>
+            <img :src="'images/'+image" />
+            Jumlah: <input type="text" size="2" v-model="qty" />
+            <button @click="$emit('select', { title, qty })">BELI</button>
+          </div>
+        `
+      }
+
+
+      // objek aplikasi Vue
+      const app = Vue.createApp({
+        data () {
+          return {
+            selectedBook: { title: '', qty: 0 }
+          }
+        },
+        components: {
+          'book': Book
+        },
+        template: `
+          <div>
+            <h1> Beli buku favoritmu! </h1>
+            <book title="Laravel" image="laravel.png" @select="selectedBook = $event" />
+            <book title="Vue" image="vue.png" @select="selectedBook = $event" />
+
+            <hr style="clear: both" />
+
+            <ul v-if="selectedBook.qty>0">
+              <li>Judul: {{selectedBook.title}}</li>
+              <li>Jumlah: {{selectedBook.qty}}</li>
+            </ul>
+          </div>
+        `
+      })
+      .mount('#app')
+    </script>
+  </body>
+</html>
